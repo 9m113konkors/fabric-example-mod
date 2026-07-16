@@ -110,14 +110,37 @@ public final class CombatTargeting {
 
 		float desiredYaw = (float) Math.toDegrees(Math.atan2(deltaZ, deltaX)) - 90.0F;
 		float desiredPitch = (float) (-Math.toDegrees(Math.atan2(deltaY, horizontalDistance)));
-		float newYaw = approachAngle(from.getYRot(), desiredYaw, maxStep);
-		float newPitch = approachAngle(from.getXRot(), desiredPitch, maxStep);
+
+		float yawDelta = wrapDegrees(desiredYaw - from.getYRot());
+		float pitchDelta = wrapDegrees(desiredPitch - from.getXRot());
+		float newYaw = from.getYRot() + approachAngleEased(yawDelta, maxStep);
+		float newPitch = from.getXRot() + approachAngleEased(pitchDelta, maxStep);
 
 		from.setYRot(newYaw);
 		from.setXRot(newPitch);
 		if (from instanceof LivingEntity living) {
 			living.setYHeadRot(newYaw);
 		}
+	}
+
+	private static float approachAngleEased(float delta, float maxStep) {
+		float absDelta = Math.abs(delta);
+		if (absDelta < 0.0001F) {
+			return 0.0F;
+		}
+
+		float t = Math.min(absDelta / maxStep, 1.0F);
+		float step = easeInOutCubic(t) * maxStep;
+		if (step > absDelta) {
+			step = absDelta;
+		}
+		return Math.copySign(step, delta);
+	}
+
+	private static float easeInOutCubic(float t) {
+		return t < 0.5F
+			? 4.0F * t * t * t
+			: 1.0F - (float) Math.pow(-2.0F * t + 2.0F, 3) / 2.0F;
 	}
 
 	public static double distanceSquared(Entity first, Entity second) {

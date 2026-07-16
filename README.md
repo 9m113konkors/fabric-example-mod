@@ -11,7 +11,3 @@ This mod adds simple client-side triggerbot, aim assist, autocrystal, silentaura
 Friends are stored separately in `config/triggerbot-friends.txt`, one username per line. All combat modules ignore friends automatically.
 
 Default binds are unset, so assign a key code for each module in the config file before using them.
-
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
