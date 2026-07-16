@@ -3,6 +3,7 @@ package com.example.client;
 import com.example.TriggerbotMod;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -89,7 +90,11 @@ public final class FriendsMenu {
 			return false;
 		}
 
-		return isFriend(CombatTargeting.entityName(entity));
+		String entityName = CombatTargeting.entityName(entity);
+		if (entity instanceof Player player) {
+			return friendsByNormalizedName.containsValue(entityName);
+		}
+		return isFriend(entityName);
 	}
 
 	public synchronized List<String> friends() {
